@@ -2,20 +2,26 @@ import numpy as np
  
 import os
 
-from keras.models import model_from_json from keras.utils.np_utils import to_categorical import cv2
-from sklearn.model_selection import train_test_split from keras.layers import Input
+from keras.models import model_from_json 
+from keras.utils.np_utils import to_categorical
+import cv2
+from sklearn.model_selection import train_test_split
+from keras.layers import Input
 from keras.models import Model
 
 from keras.layers import Conv2D, MaxPooling2D
 
-from keras.layers import Dense, Dropout, Activation, Flatten from keras.layers import Convolution2D
-from keras.models import Sequential import keras
+from keras.layers import Dense, Dropout, Activation, Flatten 
+from keras.layers import Convolution2D
+from keras.models import Sequential 
+import keras
 plants = ['Pepper    bell	Bacterial_spot', 'Pepper__bell	healthy', 'Potato	Early_blight', 'Potato	healthy', 'Potato		Late_blight', 'Tomato_Bacterial_spot',
 'Tomato_Early_blight', 'Tomato_healthy', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot',
 'Tomato_Spider_mites_Two_spotted_spider_mite',	'Tomato Target_Spot', 'Tomato Tomato_mosaic_virus', 'Tomato Tomato_YellowLeaf Curl_Virus']
 X = []
 
-Y = [] '''
+Y = [] 
+'''
 for i in range(len(plants)):
 
 for root, dirs, directory in os.walk('PlantVillage/'+plants[i]): for j in range(len(directory)):
@@ -52,15 +58,26 @@ model_json = classifier.to_json()
 with open("model/model.json", "w") as json_file: json_file.write(model_json)
 '''
 
-with open('model/model.json', "r") as json_file: loaded_model_json = json_file.read()
-loaded_model = model_from_json(loaded_model_json)
+with open('model/model.json', "r") as json_file: 
+    loaded_model_json = json_file.read()
+    loaded_model = model_from_json(loaded_model_json)
  
-loaded_model.load_weights("model/model_weights.h5") loaded_model._make_predict_function() print(loaded_model.summary())
-img = cv2.imread('16.jpg') img = cv2.resize(img, (64,64)) im2arr = np.array(img)
-im2arr = im2arr.reshape(1,64,64,3) X = np.asarray(im2arr)
-X = X.astype('float32')
+    loaded_model.load_weights("model/model_weights.h5")
+    loaded_model._make_predict_function() 
+    print(loaded_model.summary())
+    img = cv2.imread('16.jpg')
+    img = cv2.resize(img, (64,64))
+    im2arr = np.array(img)
+    im2arr = im2arr.reshape(1,64,64,3) 
+    X = np.asarray(im2arr)
+    X = X.astype('float32')
 
-X = X/255
+    X = X/255
 
-preds = loaded_model.predict(X) print(str(preds)+" "+str(np.argmax(preds))) predict = np.argmax(preds) print(plants[predict])
-img = im2arr.reshape(64,64,3) cv2.imshow(plants[predict],cv2.resize(img,(250,250))) cv2.waitKey(0)
+    preds = loaded_model.predict(X) 
+    print(str(preds)+" "+str(np.argmax(preds)))
+    predict = np.argmax(preds) 
+    print(plants[predict])
+    img = im2arr.reshape(64,64,3)
+    cv2.imshow(plants[predict],cv2.resize(img,(250,250))) 
+    cv2.waitKey(0)
